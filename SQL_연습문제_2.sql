@@ -196,14 +196,20 @@ where t_dist = 1
 order by t_amount desc;
 
 # 실습 2-30
-select t_no, a_no, c_no, t_dist, a_item_name,
-	c_name, count(t_no) 거래건수
-from bank_transaction a
-join bank_account b on a.t_a_no = b.a_no
-join bank_customer c on b.a_c_no = c.c_no
-where t_dist in (1, 2) and c_dist = 1
-group by c_no
-order by t_dist, 거래건수 desc;
+SELECT 
+    ANY_VALUE(`t_no`) AS `t_no`,
+    ANY_VALUE(`a_no`) AS `a_no`, 
+    `c_no`, 
+    ANY_VALUE(`t_dist`) AS `t_dist`, 
+    ANY_VALUE(`a_item_name`) AS `a_item_name`, 
+    ANY_VALUE(`c_name`) AS `c_name`, 
+    COUNT(`t_no`) AS `거래건수`
+FROM `bank_transaction` AS a
+JOIN `bank_account` AS b ON a.t_a_no = b.a_no
+JOIN `bank_customer` AS c ON b.a_c_no = c.c_no
+WHERE `t_dist` IN(1, 2) AND `c_dist` = 1
+GROUP BY c_no
+ORDER BY `t_dist`, `거래건수` DESC;
 
 
 # only full group by 오류 끄기 (error code 1055)
